@@ -42,6 +42,10 @@ CNN:
 
 ## 如何运行
 
+除本文件夹代码外，还需要下载维基百科中文词向量映射：
+网址：[维基百科中文词向量](https://pan.baidu.com/s/1ZKePwxwsDdzNrfkc6WKdGQ)
+并在hyp.py对应其位置
+
 - 训练：`python train_CNN.py`
 
 - 测试：`python test_CNN.py`
