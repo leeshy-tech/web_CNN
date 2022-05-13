@@ -263,21 +263,21 @@ if __name__ == '__main__':
         best_acc, best_f1, best_thresh = None, None, None
         best_auc = None
         best_fpr, best_tpr = None, None
-        train_auc_list, valid_auc_list = [], []
+        train_loss_list, valid_loss_list = [], []
         print("-" * 90)
         for epoch in range(epoches):
             epoch_start_time = time.time()
             # 训练
             train_loss, train_fpr, train_tpr, train_auc = train_fc(model, train_dataset, train_dataset['sim'],
                                                                    batch_size, opt, criterion)
-            train_auc_list.append(train_auc)
+            train_loss_list.append(train_loss)
             print("|start of epoch{:3d} | time : {:2.2f}s | loss {:5.6f} | train_auc {}".format(epoch + 1,
                                                                                                 time.time() - epoch_start_time,
                                                                                                 train_loss, train_auc))
             # 验证集上验证性能
             val_loss, val_fpr, val_tpr, val_auc, val_f1 = validate(model, valid_dataset, valid_dataset['sim'],
                                                                    batch_size, criterion)
-            valid_auc_list.append(val_auc)
+            valid_loss_list.append(val_loss)
             lr_reducer.step(val_loss)
             print("-" * 10)
             print("| end of epoch {:3d}| time: {:2.2f}s | loss: {:.4f} |valid_auc {} |valid_f1 {}".format(epoch + 1,
@@ -293,12 +293,12 @@ if __name__ == '__main__':
                 print("save the best model... best_auc: %s" % best_auc)
                 model_weight = hyp['save_model_name']
                 torch.save(model_state_dict, model_weight)
-            with open('train_textCNN_auc.csv', 'w', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(train_auc_list)
-            with open('valid_textCNN_auc.csv', 'w', newline='') as f:
-                writer = csv.writer(f)
-                writer.writerow(valid_auc_list)
+        with open('train_textCNN_loss.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(train_loss_list)
+        with open('valid_textCNN_loss.csv', 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(valid_loss_list)
     except KeyboardInterrupt:
         print("-" * 90)
         print("Exiting from training early | cost time: {:5.2f}min".format((time.time() - total_start_time) / 60.0))
